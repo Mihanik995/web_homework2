@@ -1,11 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.views.generic import ListView, DetailView, TemplateView
 
 from catalog.models import Product
 
-
-def home(request):
-    context = {'object_list': Product.objects.all()}
-    return render(request, 'main/home.html', context)
 
 def contacts(request):
     if request.method == 'POST':
@@ -15,6 +12,23 @@ def contacts(request):
         print(f'{name} ({phone}): "{message}"')
     return render(request, 'main/contacts.html')
 
-def products(request, pk):
-    context = {'object': Product.objects.get(pk=pk)}
-    return render(request, 'main/products.html', context)
+
+class ProductListView(ListView):
+    template_name = 'main/home.html'
+    model = Product
+
+
+class ProductDetailView(DetailView):
+    template_name = 'main/products.html'
+    model = Product
+
+
+class ContactsView(TemplateView):
+    template_name = 'main/contacts.html'
+
+    def post(self, request):
+        name = request.POST.get('name')
+        phone = request.POST.get('phone')
+        message = request.POST.get('message')
+        print(f'{name} ({phone}): "{message}"')
+        return redirect('contacts_view')
