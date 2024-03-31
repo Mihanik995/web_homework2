@@ -40,6 +40,8 @@ class Publication(models.Model):
     created_at = models.DateTimeField(verbose_name='created at', auto_now_add=True)
     views = models.IntegerField(verbose_name='views', default=0)
 
+    is_published = models.BooleanField(default=True, verbose_name='published')
+
     def __str__(self):
         return f'{self.title}'
 

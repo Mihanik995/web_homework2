@@ -1,5 +1,6 @@
 from django.shortcuts import redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
+from django.utils.text import slugify
 from django.views.generic import ListView, DetailView, TemplateView, DeleteView, UpdateView, CreateView
 
 from catalog.models import Product, Publication
@@ -21,22 +22,43 @@ class PublicationCreateView(CreateView):
     fields = ('title', 'text',)
     success_url = reverse_lazy('publication_list')
 
+    def form_valid(self, form):
+        if form.is_valid():
+            new_publication = form.save()
+            new_publication.slug = slugify(new_publication.title)
+            new_publication.save()
+
+        return super().form_valid(form)
+
 
 class PublicationListView(ListView):
     template_name = 'main/blog_view.html'
     model = Publication
+
+    def get_queryset(self, *args, **kwargs):
+        queryset = super().get_queryset(*args, **kwargs)
+        queryset = queryset.filter(is_published=True)
+        return queryset
 
 
 class PublicationDetailView(DetailView):
     template_name = 'main/blog_detail.html'
     model = Publication
 
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        self.object.views += 1
+        self.object.save()
+        return self.object
+
 
 class PublicationUpdateView(UpdateView):
     template_name = 'main/blog_form.html'
     model = Publication
     fields = ('title', 'text', 'preview',)
-    success_url = reverse_lazy('publication_list')
+
+    def get_success_url(self):
+        return reverse('publication_detail', args=[self.kwargs.get('pk')])
 
 
 class PublicationDeleteView(DeleteView):
