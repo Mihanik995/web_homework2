@@ -1,0 +1,25 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+{% load tts %}
+<div class="container">
+    <a href="{% url 'add_publication' %}" class="btn btn-primary">Новая публикация</a>
+    <div class="container">
+        <div class="row">
+            {% for object in object_list %}
+            <div class="col-3">
+                <div class="card" style="width: 18rem;">
+                    <img src="{{object.preview|mymedia}}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">{{object.title}}</h5>
+                        <p class="card-text">{{object.text|slice:":100"}}</p>
+                        <a class="btn btn-primary" href="{% url 'publication_detail' object.pk %}">Подробнее</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
