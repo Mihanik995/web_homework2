@@ -48,3 +48,16 @@ class Publication(models.Model):
     class Meta:
         verbose_name = 'note'
         verbose_name_plural = 'notes'
+
+class Version(models.Model):
+    product = models.ForeignKey(to=Category, on_delete=models.CASCADE, verbose_name='product')
+    number = models.FloatField(verbose_name='number')
+    title = models.CharField(max_length=150, verbose_name='title')
+    is_current_version = models.BooleanField(verbose_name='current version')
+
+    def __str__(self):
+        return f'{self.number}: {self.title}'
+
+    class Meta:
+        verbose_name = 'version'
+        verbose_name_plural = 'versions'
