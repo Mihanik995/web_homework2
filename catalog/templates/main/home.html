@@ -16,11 +16,13 @@
                         <h6>{{object.description|slice:":100"}}</h6>
                     </ul>
                     <a type="button" class="btn btn-lg btn-block btn-outline-primary" href="{% url 'product_detail' object.pk %}">Купить</a>
+                    <a type="button" class="btn btn-lg btn-block btn-outline-primary" href="{% url 'update_product' object.pk %}">Редактировать</a>
                 </div>
             </div>
         </div>
         {% endfor %}
     </div>
+    <a class="btn btn-primary" href="{% url 'add_product'%}">Добавить продукт</a>
 </div>
 
 {% endblock %}
