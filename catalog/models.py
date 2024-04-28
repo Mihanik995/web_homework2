@@ -32,6 +32,11 @@ class Product(models.Model):
     class Meta:
         verbose_name = 'product'
         verbose_name_plural = 'products'
+        permissions = [
+            ('set_published_status', 'Can publish products'),
+            ('change_description', 'Can change description'),
+            ('change_category', 'Can change product category')
+        ]
 
 
 class Publication(models.Model):
@@ -42,7 +47,7 @@ class Publication(models.Model):
     created_at = models.DateTimeField(verbose_name='created at', auto_now_add=True)
     views = models.IntegerField(verbose_name='views', default=0)
 
-    is_published = models.BooleanField(default=True, verbose_name='published')
+    is_published = models.BooleanField(default=False, verbose_name='published')
     creator = models.ForeignKey(to=User, on_delete=models.SET_NULL, verbose_name='creator', **NULLABLE)
 
     def __str__(self):
