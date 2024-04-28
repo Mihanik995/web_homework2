@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.utils.text import slugify
@@ -16,17 +17,35 @@ class ProductDetailView(DetailView):
     template_name = 'main/products.html'
     model = Product
 
-class ProductCreateView(CreateView):
+
+class ProductCreateView(LoginRequiredMixin, CreateView):
     template_name = 'main/product_form.html'
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('products_list')
 
-class ProductUpdateView(UpdateView):
+    login_url = '/login/'
+    redirect_field_name = ''
+
+    def form_valid(self, form):
+        if form.is_valid():
+            new_product = form.save()
+            new_product.creator = self.request.user
+            new_product.save()
+
+        return super().form_valid(form)
+
+
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'main/product_form.html'
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('products_list')
+
+    login_url = '/login/'
+    redirect_field_name = ''
+
+    
 
 
 class PublicationCreateView(CreateView):

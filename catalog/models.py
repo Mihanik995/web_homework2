@@ -1,5 +1,7 @@
 from django.db import models
 
+from users.models import User
+
 NULLABLE = {'blank': True, 'null': True}
 
 
@@ -41,9 +43,11 @@ class Publication(models.Model):
     views = models.IntegerField(verbose_name='views', default=0)
 
     is_published = models.BooleanField(default=True, verbose_name='published')
+    creator = models.ForeignKey(to=User, on_delete=models.SET_NULL, verbose_name='creator', **NULLABLE)
 
     def __str__(self):
         return f'{self.title}'
+
 
     class Meta:
         verbose_name = 'note'
