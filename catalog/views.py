@@ -5,12 +5,22 @@ from django.utils.text import slugify
 from django.views.generic import ListView, DetailView, TemplateView, DeleteView, UpdateView, CreateView
 
 from catalog.forms import ProductForm
-from catalog.models import Product, Publication
+from catalog.models import Product, Publication, Category
+from catalog.scripts import get_category_list
 
 
 class ProductListView(ListView):
     template_name = 'main/home.html'
     model = Product
+    extra_context = {
+        'categories': get_category_list(),
+    }
+
+    def get_queryset(self):
+        if 'pk' in self.kwargs.keys():
+            return Product.objects.filter(category=Category.objects.get(pk=self.kwargs['pk']))
+        else:
+            return Product.objects.all()
 
 
 class ProductDetailView(DetailView):
@@ -44,8 +54,6 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
 
     login_url = '/login/'
     redirect_field_name = ''
-
-    
 
 
 class PublicationCreateView(CreateView):

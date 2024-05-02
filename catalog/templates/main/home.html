@@ -3,6 +3,18 @@
 {% block content %}
 
 <div class="container">
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Выберите категорию
+        </button>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{% url 'products_list' %}">Все категории</a></li>
+            {% for category in categories %}
+            <li><a class="dropdown-item" href="{% url 'products_list_sorted' category.pk %}">{{category.name}}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+    <br>
     <div class="row text-center">
         {% for object in object_list %}
         <div class="col-3">
@@ -15,9 +27,11 @@
                     <ul class="list-unstyled mt-3 mb-4 text-start m-3">
                         <h6>{{object.description|slice:":100"}}</h6>
                     </ul>
-                    <a type="button" class="btn btn-lg btn-block btn-outline-primary" href="{% url 'product_detail' object.pk %}">Купить</a>
+                    <a type="button" class="btn btn-lg btn-block btn-outline-primary"
+                       href="{% url 'product_detail' object.pk %}">Купить</a>
                     {% if object.user == user %}
-                        <a type="button" class="btn btn-lg btn-block btn-outline-primary" href="{% url 'update_product' object.pk %}">Редактировать</a>
+                    <a type="button" class="btn btn-lg btn-block btn-outline-primary"
+                       href="{% url 'update_product' object.pk %}">Редактировать</a>
                     {% endif %}
                 </div>
             </div>
