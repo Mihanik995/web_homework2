@@ -5,14 +5,13 @@ from config import settings
 
 
 def get_category_list_from_cache():
-    queryset = Category.objects.all()
     if settings.CACHE_ENABLED:
         key = 'categories'
         cache_data = cache.get(key)
         if cache_data is None:
-            cache_data = queryset
+            cache_data = Category.objects.all()
             cache.set(key, cache_data)
+    else:
+        cache_data = Category.objects.all()
 
-        return cache_data
-
-    return queryset
+    return cache_data
