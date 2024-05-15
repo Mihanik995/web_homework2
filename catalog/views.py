@@ -14,7 +14,7 @@ class ProductListView(ListView):
     model = Product
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(self, object_list, **kwargs)
+        context = super().get_context_data()
         context['categories'] = get_category_list_from_cache()
         return context
 
