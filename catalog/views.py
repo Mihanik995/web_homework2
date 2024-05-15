@@ -12,9 +12,11 @@ from catalog.scripts import get_category_list_from_cache
 class ProductListView(ListView):
     template_name = 'main/home.html'
     model = Product
-    extra_context = {
-        'categories': get_category_list_from_cache(),
-    }
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(self, object_list, **kwargs)
+        context['categories'] = get_category_list_from_cache()
+        return context
 
     def get_queryset(self):
         if 'pk' in self.kwargs.keys():
