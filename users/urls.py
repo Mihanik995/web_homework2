@@ -3,7 +3,7 @@ from django.urls import path
 from django.views.generic import TemplateView
 
 from users.apps import UsersConfig
-from users.views import UserRegisterView, activate
+from users.views import UserRegisterView, activate, PasswordResetView
 
 app_name = UsersConfig.name
 
@@ -14,4 +14,5 @@ urlpatterns = [
     path('activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/',
          activate, name='activate'),
     path('ver_request/', TemplateView.as_view(), name='ver_request'),
+    path('new_password_request/', PasswordResetView.as_view(), name='new_password_request'),
 ]

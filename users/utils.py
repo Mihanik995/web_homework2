@@ -1,3 +1,6 @@
+import random
+import string
+
 import six
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
@@ -11,3 +14,8 @@ class TokenGenerator(PasswordResetTokenGenerator):
 
 
 account_activation_token = TokenGenerator()
+
+
+def randomword(length):
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for i in range(length))

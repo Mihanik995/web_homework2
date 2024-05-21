@@ -1,5 +1,4 @@
 from django.contrib.auth import get_user_model
-from django.contrib.auth.views import LoginView
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from django.shortcuts import render
@@ -7,11 +6,11 @@ from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.views.generic import CreateView
+from django.views.generic import CreateView, TemplateView
 
 from users.forms import CustomUserCreationForm
 from users.models import User
-from users.utils import account_activation_token
+from users.utils import account_activation_token, randomword
 
 
 class UserRegisterView(CreateView):
@@ -57,3 +56,24 @@ def activate(request, uidb64, token):
         return render(request, 'users/account_activated.html')
     else:
         return render(request, 'users/invalid_link.html')
+
+class PasswordResetView(TemplateView):
+    template_name = 'users/new_password_request.html'
+
+    def post(self, request):
+        user_email = request.POST.get('email')
+        user = User.objects.get(email=user_email)
+        new_password = randomword(12)
+        user.set_password(new_password)
+
+        message = render_to_string('users/new_password_email.html', {
+            'user': user_email,
+            'new_password': new_password
+        })
+        email = EmailMessage(
+            'Your new password', message, to=[user_email]
+        )
+        email.send()
+
+        user.save()
+        return render(request, 'users/new_password_sent.html')
